@@ -1,0 +1,8 @@
+.idea
+PROCESS
+pet-restart.*
+target
+log4j-application.log
+dependency-reduced-pom.xml
+TODO.txt
+resources/config.xml
