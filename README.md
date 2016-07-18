@@ -8,7 +8,7 @@ Tableau local service restarter Command-line interface utility.
 
 ```java -jar pet-restart-1.0.jar```
 
-## Grafcefully restart VizQL Workers:
+## Gracefully restart VizQL Workers:
 
 ```java -jar pet-restart-1.0.jar -rv```
 
@@ -17,13 +17,13 @@ Tableau local service restarter Command-line interface utility.
 
 ```java -jar pet-restart-1.0.jar -rv -f --wait 1```
 
-## Restart VizQL Workers :
+## Reload Repository configuration :
 
 ```java -jar pet-restart-1.0.jar -pg```
 
 ## Simulate restarting Cache and Repository:
 
-```java -jar pet-restart-1.0.jar -rc -rc -s```
+```java -jar pet-restart-1.0.jar -pg -rc -s```
 
 # Switches
 
