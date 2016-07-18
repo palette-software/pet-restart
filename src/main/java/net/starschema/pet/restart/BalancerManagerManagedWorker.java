@@ -23,7 +23,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 package net.starschema.pet.restart;
 
 /**
- * Iterface represents any kid of mod_balancer worker in Tableau Server gateway configuration.
+ * Iterface represents a Worker in Tableau Server gateway mod_balancer configuration.
  */
 interface BalancerManagerManagedWorker extends Worker {
 

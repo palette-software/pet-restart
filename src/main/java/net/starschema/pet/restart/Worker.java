@@ -25,7 +25,7 @@ package net.starschema.pet.restart;
 import java.util.List;
 
 /**
- * Iterface represents any kid of mod_balancer worker in Tableau Server gateway configuration.
+ * Iterface represents a restartable process (Worker) in Tableau Server.
  */
 interface Worker {
 
