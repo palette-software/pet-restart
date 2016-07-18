@@ -26,7 +26,10 @@ import java.util.List;
 
 class WorkerGateway extends AbstractWorker {
 
+    //the name of the windows process of the Worker.
     private static final String WINDOWS_PROCESS_NAME = "httpd.exe";
+
+    //Regex pattern string to find the pid and filter to the command line of the Worker in wmic
     private static final String SEARCH_PROCESS_REGEX = "^\"([^\"])*" + WINDOWS_PROCESS_NAME + "\" -E.*\\s+([0-9]+)\\s*$";
 
     WorkerGateway() {

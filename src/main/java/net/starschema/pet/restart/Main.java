@@ -32,7 +32,7 @@ public class Main {
     final static Logger loggerStdOut = Logger.getLogger(Main.class);
     final static Logger loggerFile = Logger.getLogger("fileLogger");
 
-    final static String VERSION = "1.0";
+    private final static String VERSION = "1.0";
 
     //Simaulate all the kills/shutdowns/restarts
     static int SIMULATION = 0;
@@ -45,7 +45,7 @@ public class Main {
         CommandLineParser parser = new GnuParser();
         Options options = new Options();
 
-
+        //add the options
         options.addOption("h", "help", false, "This help.");
         options.addOption("v", "version", false, "Print version information.");
         options.addOption("r", "restart", false, "Restart all processes one-by-one.");
@@ -84,6 +84,12 @@ public class Main {
                 .withArgName("SECONDS")
                 .create());
 
+        options.addOption(OptionBuilder.withLongOpt("tabsvc-config-dir")
+                .withDescription("Path to tabsvc configs")
+                .hasArg()
+                .withArgName("PATH")
+                .create());
+
 
         try {
 
@@ -108,28 +114,41 @@ public class Main {
                     CliControl.FORCE_RESTARTS = true;
                 }
 
+
+                if (line.hasOption("tabsvc-config-dir")) {
+                    String tabsvc_config_dir = line.getOptionValue("tabsvc-config-dir");
+                  
+                    if (!HelperFile.checkIfDir(tabsvc_config_dir)) {
+                        throw new Exception("tabsvc-config-dir must be a valid directory");
+                    }
+                    CliControl.TABSVC_CONFIG_DIR = tabsvc_config_dir;
+                }
+
                 int clicontrol_force_shutdown = 0;
                 if (line.hasOption("force-restart-timeout")) {
                     try {
                         clicontrol_force_shutdown = Integer.parseInt(line.getOptionValue("force-restart-timeout"));
                     } catch (Exception e) {
-                        throw new Exception("force-restart-timeout must be a number!");
+                        throw new Exception("force-restart-timeout must be a number");
                     }
                     if (clicontrol_force_shutdown < 1) {
-                        throw new Exception("force-restart-timeout must be a positive number!");
+                        throw new Exception("force-restart-timeout must be a positive number");
                     }
                     CliControl.FORCE_SHUTDOWN = clicontrol_force_shutdown;
                 }
+
+
+
 
                 int jmxclienthelper_jmx_polling_time;
                 if (line.hasOption("jmx-polling-time")) {
                     try {
                         jmxclienthelper_jmx_polling_time = Integer.parseInt(line.getOptionValue("jmx-polling-time"));
                     } catch (Exception e) {
-                        throw new Exception("jmx-polling-time must be a number!");
+                        throw new Exception("jmx-polling-time must be a number");
                     }
                     if (jmxclienthelper_jmx_polling_time < 1) {
-                        throw new Exception("jmx-polling-time be a positive number!");
+                        throw new Exception("jmx-polling-time be a positive number");
                     }
                     if (clicontrol_force_shutdown < jmxclienthelper_jmx_polling_time) {
                         throw new Exception("force-restart-timeout must be at least jmx-polling-time");
@@ -142,10 +161,10 @@ public class Main {
                     try {
                         clicontrol_wait = Integer.parseInt(line.getOptionValue("wait"));
                     } catch (Exception e) {
-                        throw new Exception("wait must be a number!");
+                        throw new Exception("wait must be a number");
                     }
                     if (clicontrol_wait < 1) {
-                        throw new Exception("wait must be a positive number!");
+                        throw new Exception("wait must be a positive number");
                     }
                     CliControl.WAIT_AFTER = clicontrol_wait;
                 }
@@ -155,10 +174,10 @@ public class Main {
                     try {
                         clicontrol_wait_errors = Integer.parseInt(line.getOptionValue("wait-errors"));
                     } catch (Exception e) {
-                        throw new Exception("wait-errors must be a number!");
+                        throw new Exception("wait-errors must be a number");
                     }
                     if (clicontrol_wait_errors < 1) {
-                        throw new Exception("wait-errors must be a positive number!");
+                        throw new Exception("wait-errors must be a positive number");
                     }
 
                     CliControl.WAIT_AFTER_ERROR = clicontrol_wait_errors;

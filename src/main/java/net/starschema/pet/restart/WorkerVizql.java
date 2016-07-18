@@ -26,14 +26,28 @@ import java.util.List;
 
 class WorkerVizql extends AbstractWorker implements BalancerManagerManagedWorker {
 
+    //Balancer Manager cluster name
     private static final String BALANCERMEMBER_NAME = "vizqlserver-cluster";
+
+    //the name of the windows process of the Worker.
     private static final String WINDOWS_PROCESS_NAME = "vizqlserver.exe";
+
+    //MBean object name in JMX
     private static final String M_BEAN_OBJECT_NAME = "tableau.health.jmx:name=vizqlservice";
+
+    //Regex pattern string to find the pid and filter to the command line of the Worker in wmic
     private static final String SEARCH_PROCESS_REGEX = "^\"([^\"])*" + WINDOWS_PROCESS_NAME + "\".*\\s+([0-9]+)\\s*$";
 
+    //Balancer Manager member name
     private String memberName;
+
+    //Balancer Manager route
     private String route;
+
+    //Balancer Manager nonce for the Worker's cluster
     private String nonce;
+
+    //JMX port of the Worker
     private int jmxPort;
 
     WorkerVizql(String memberName, String route, String nonce, int jmxPort) {
@@ -44,43 +58,38 @@ class WorkerVizql extends AbstractWorker implements BalancerManagerManagedWorker
 
     }
 
+    //getters for private propertiers
     public String getMBeanObjectName() {
         return M_BEAN_OBJECT_NAME;
     }
-
     public String getBalancerMemberName() {
         return BALANCERMEMBER_NAME;
     }
-
     public String getName() {
         return memberName;
     }
-
     public String getNonce() {
         return nonce;
     }
-
     public String getRoute() {
         return route;
     }
-
     public int getJmxPort() {
         return jmxPort;
     }
-
     public String getWindowsProcessName() {
         return WINDOWS_PROCESS_NAME;
     }
+    public List<Integer> getProcessId(boolean multiple) throws Exception {
+        return getProcessIdHelper(multiple, SEARCH_PROCESS_REGEX);
+    }
 
+    //wrapper to get Workers from Balancer Manager html source
     static List<BalancerManagerManagedWorker> getworkersFromHtml(String body) throws Exception {
-        return HttpClientHelper.getworkersFromHtml(body, BALANCERMEMBER_NAME, M_BEAN_OBJECT_NAME);
+        return HttpClientHelper.getWorkersFromHtml(body, BALANCERMEMBER_NAME, M_BEAN_OBJECT_NAME);
     }
 
     public String toString() {
         return "vizqlserver " + this.route + " " + this.memberName;
-    }
-
-    public List<Integer> getProcessId(boolean multiple) throws Exception {
-        return getProcessIdHelper(multiple, SEARCH_PROCESS_REGEX);
     }
 }

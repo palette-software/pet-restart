@@ -31,6 +31,7 @@ import javax.management.remote.JMXServiceURL;
 import java.io.IOException;
 import java.util.Objects;
 
+// JMX Client Helper to check and query Tableau's MBeans
 class HelperJmxClient implements AutoCloseable {
 
     private JMXConnector jmxc;
@@ -41,12 +42,18 @@ class HelperJmxClient implements AutoCloseable {
         this.url = null;
     }
 
+    //check if objectName a Tableau MBean
     boolean checkBeanExists(String objectName) throws Exception {
+
+        //check the connection
         if (jmxc == null || url == null) {
             throw new Exception("Cannot check Mbean without connection");
         }
         MBeanServerConnection mbsc = getBeans();
         try {
+
+            //try to invoke getPerformanceMetrics from objectName.
+            // If it won't fail, objectName ins a valid Tableau MBean
             mbsc.invoke(new ObjectName(objectName), "getPerformanceMetrics", new Object[]{}, new String[]{});
         } catch (InstanceNotFoundException e) {
             return false;
@@ -54,11 +61,12 @@ class HelperJmxClient implements AutoCloseable {
         return true;
     }
 
+    //get the number of objectName's active sessions.
     String getActiveSessions(String objectName) throws Exception {
         return getPerformanceMetrics(objectName, "ActiveSessions");
     }
 
-    //return something for the Tableu jmx server's getPerformanceMetrics.
+    //return a variable for the Tableu jmx server's getPerformanceMetrics.
     private String getPerformanceMetrics(String objectName, String variableName) throws Exception {
         MBeanServerConnection mbsc = getBeans();
 
@@ -67,12 +75,14 @@ class HelperJmxClient implements AutoCloseable {
         return (invoked.get(variableName).toString());
     }
 
+    //close jmxc
     public void close() throws IOException {
         if (this.jmxc != null) {
             this.jmxc.close();
         }
     }
 
+    //connect jmxc
     void connectService(String JMXServiceURL) throws Exception {
 
         int count = 0;
@@ -95,6 +105,7 @@ class HelperJmxClient implements AutoCloseable {
 
     }
 
+    //Get MBeabns from jmxc
     private MBeanServerConnection getBeans() throws Exception {
         return jmxc.getMBeanServerConnection();
     }

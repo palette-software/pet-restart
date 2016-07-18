@@ -34,6 +34,7 @@ class HelperWindowsTask {
     public HelperWindowsTask() throws Exception {
     }
 
+    //kill a windows process using task killer
     static void killProcessByPid(int toKill) throws Exception {
 
         if (Main.SIMULATION < 1) {
@@ -42,41 +43,52 @@ class HelperWindowsTask {
         }
     }
 
+    //search for the pid of a windows process, using wmic. Filter to the process' name and command line
+    // of the execution to find a specific process. The pattern's second group match has to be the pid.
     static int searchForPidInWmic(String windows_process_name, Pattern pattern) throws Exception {
-        String line;
+
+        //run wmic
         String cmd = System.getenv("windir") + "\\system32\\wbem\\wmic.exe " +
                 " process where \"name='" + windows_process_name + "'\" get Processid, Commandline";
         Main.loggerFile.info("exec: " + cmd);
         Process p = Runtime.getRuntime().exec(cmd);
-        BufferedReader input =
-                new BufferedReader(new InputStreamReader(p.getInputStream()));
-        while ((line = input.readLine()) != null) {
-            Matcher m = pattern.matcher(line);
-            if (m.matches()) {
-                input.close();
-                return Integer.parseInt(m.group(2));
-            }
-        }
-        input.close();
-        return -1;
-    }
 
+        //get wmic's output
+        try (
+                BufferedReader output = new BufferedReader(new InputStreamReader(p.getInputStream()))
+        )
+        {
+            String line;
+            while ((line = output.readLine()) != null) {
+                Matcher m = pattern.matcher(line);
+                if (m.matches()) {
+                    return Integer.parseInt(m.group(2));
+                }
+            }
+            return -1;
+        }
+    }
+    //search for a list of a windows processes pids, using wmic. Filter to the processes name and command line
+    // of the execution to find the specified proceses. The pattern's second group match has to be the pid.
     static List<Integer> searchForPidsInWmic(String windows_process_name, Pattern pattern) throws Exception {
-        String line;
+
         List<Integer> ports = new ArrayList<>();
 
         Process p = Runtime.getRuntime().exec
                 (System.getenv("windir") + "\\system32\\wbem\\wmic.exe " +
                         " process where \"name='" + windows_process_name + "'\" get Processid, Commandline");
-        BufferedReader input =
-                new BufferedReader(new InputStreamReader(p.getInputStream()));
-        while ((line = input.readLine()) != null) {
-            Matcher m = pattern.matcher(line);
-            if (m.matches()) {
-                ports.add(Integer.parseInt(m.group(2)));
+        try(
+                BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))
+        )
+        {
+            String line;
+            while ((line = input.readLine()) != null) {
+                Matcher m = pattern.matcher(line);
+                if (m.matches()) {
+                    ports.add(Integer.parseInt(m.group(2)));
+                }
             }
+            return ports;
         }
-        input.close();
-        return ports;
     }
 }

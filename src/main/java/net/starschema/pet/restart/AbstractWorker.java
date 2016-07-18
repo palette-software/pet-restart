@@ -38,7 +38,6 @@ abstract class AbstractWorker implements Worker {
      * @param multiple if false, only one pid will be return.
      * @param search_process_regex string represents to identify tasks in Wmic.
      * @return pid(s)
-     * @throws Exception
      */
     List<Integer> getProcessIdHelper(boolean multiple, String search_process_regex) throws Exception {
         Pattern pattern = Pattern.compile(search_process_regex, Pattern.MULTILINE | Pattern.DOTALL);

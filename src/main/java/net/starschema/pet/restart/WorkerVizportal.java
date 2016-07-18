@@ -26,14 +26,29 @@ import java.util.List;
 
 class WorkerVizportal extends AbstractWorker implements BalancerManagerManagedWorker {
 
+    //Balancer Manager cluster name
     private static final String BALANCERMEMBER_NAME = "local-vizportal";
+
+    //the name of the windows process of the Worker.
     private static final String WINDOWS_PROCESS_NAME = "vizportal.exe";
+
+    //MBean object name in JMX. Because there is no getperformanceMetrics in the MBean,
+    // set it to "" to skip the JMX part.
     private static final String M_BEAN_OBJECT_NAME = "";
+
+    //Regex pattern string to find the pid and filter to the command line of the Worker in wmic
     private static final String SEARCH_PROCESS_REGEX = "^\"([^\"])*" + WINDOWS_PROCESS_NAME + "\".*\\s+([0-9]+)\\s*$";
 
+    //Balancer Manager member name
     private String memberName;
+
+    //Balancer Manager route
     private String route;
+
+    //Balancer Manager nonce for the Worker's cluster
     private String nonce;
+
+    //JMX port of the Worker
     private int jmxPort;
 
     WorkerVizportal(String memberName, String route, String nonce, int jmxPort) {
@@ -44,43 +59,38 @@ class WorkerVizportal extends AbstractWorker implements BalancerManagerManagedWo
 
     }
 
+    //getters for private propertiers
     public String getMBeanObjectName() {
         return M_BEAN_OBJECT_NAME;
     }
-
     public String getBalancerMemberName() {
         return BALANCERMEMBER_NAME;
     }
-
     public String getName() {
         return memberName;
     }
-
     public String getNonce() {
         return nonce;
     }
-
-    public String getRoute() {
-        return "";
-    }
-
-    public int getJmxPort() {
-        return jmxPort;
-    }
-
     public String getWindowsProcessName() {
         return WINDOWS_PROCESS_NAME;
     }
+    public int getJmxPort() {
+        return jmxPort;
+    }
+    public List<Integer> getProcessId(boolean multiple) throws Exception {
+        return getProcessIdHelper(multiple, SEARCH_PROCESS_REGEX);
+    }
 
+    //single instance only, there is no route
+    public String getRoute() {return ""; }
+
+    //wrapper to get Workers from Balancer Manager html source
     static List<BalancerManagerManagedWorker> getworkersFromHtml(String body) throws Exception {
-        return HttpClientHelper.getworkersFromHtml(body, BALANCERMEMBER_NAME, M_BEAN_OBJECT_NAME);
+        return HttpClientHelper.getWorkersFromHtml(body, BALANCERMEMBER_NAME, M_BEAN_OBJECT_NAME);
     }
 
     public String toString() {
         return "vizqlserver " + this.route + " " + this.memberName;
-    }
-
-    public List<Integer> getProcessId(boolean multiple) throws Exception {
-        return getProcessIdHelper(multiple, SEARCH_PROCESS_REGEX);
     }
 }

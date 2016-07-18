@@ -39,11 +39,13 @@ import java.util.regex.Pattern;
 
 class HttpClientHelper {
 
+    //accepted http post keys to interact with Balancer Manager
     private enum BalancerManagerAcceptedPostKeys {
         w_status_N,
         w_status_D
     }
 
+    //check given string is acceptable to interact with Balancer Manager.
     private static boolean BalancerManagerAcceptedPostKeysContains(String needle) {
         for (BalancerManagerAcceptedPostKeys c : BalancerManagerAcceptedPostKeys.values()) {
             if (c.name().equals(needle)) {
@@ -61,16 +63,18 @@ class HttpClientHelper {
         return z.toString();
     }
 
+    //Modify a Balancer manager managed worker's status in mod_balancer using http request(s)
     static void modifyWorker(String targetURL, BalancerManagerManagedWorker w, HashMap<String, Integer> switches) throws Exception {
-
         try (
                 CloseableHttpClient client = HttpClients.createDefault()
         ) {
 
+            //connect to Balancer Manager
             HttpPost httpPost = new HttpPost(targetURL);
 
             List<NameValuePair> params = new ArrayList<>();
 
+            //check the switches map for the keys are acceptable to interact with Balancer Manager
             for (Map.Entry<String, Integer> entry : switches.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue().toString();
@@ -80,12 +84,17 @@ class HttpClientHelper {
                 }
                 params.add(new BasicNameValuePair(key, value));
             }
+
+            //add the necessary parameters
             params.add(new BasicNameValuePair("b", w.getBalancerMemberName()));
             params.add(new BasicNameValuePair("w", w.getName()));
             params.add(new BasicNameValuePair("nonce", w.getNonce()));
             httpPost.setEntity(new UrlEncodedFormEntity(params));
 
+            //send the request
             CloseableHttpResponse response = client.execute(httpPost);
+
+            //throw an exception is the result status is abnormal.
             int responseCode = response.getStatusLine().getStatusCode();
             if (200 != responseCode) {
                 throw new Exception("Balancer-manager returned a http response of " + responseCode);
@@ -93,7 +102,8 @@ class HttpClientHelper {
         }
     }
 
-    static List<BalancerManagerManagedWorker> getworkersFromHtml(String body, String clusterName, String jmxObjectName) throws Exception {
+    //get Workers from the given cluster from Balancer Manager.
+    static List<BalancerManagerManagedWorker> getWorkersFromHtml(String body, String clusterName, String jmxObjectName) throws Exception {
 
         String regex;
         Pattern p;
@@ -120,7 +130,7 @@ class HttpClientHelper {
 
         List<BalancerManagerManagedWorker> workers = new ArrayList<>();
 
-        //Search for the workers' name
+        //Search for the Workers' name
         for (String s : bodySlpit) {
             regex = "<td><a href=\"/balancer-manager\\?b=" + clusterName + "&w=([^&]+)&nonce=" + nonce + "[^<]*</a></td><td>([^<]+)?.*";
             p = Pattern.compile(regex, Pattern.MULTILINE | Pattern.DOTALL);
@@ -144,7 +154,9 @@ class HttpClientHelper {
                     jmxPort = Integer.parseInt(m.group(1)) + 300;
 
                     //check if port exists
-                    try (HelperJmxClient jmxClient = new HelperJmxClient()) {
+                    try (
+                            HelperJmxClient jmxClient = new HelperJmxClient()
+                    ) {
 
                         int count = 0;
                         String error = "";

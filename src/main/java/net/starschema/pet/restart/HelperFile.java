@@ -30,14 +30,20 @@ import java.util.regex.Pattern;
 
 class HelperFile {
 
+    //file name of redis.conf
     static final String REDIS_CONFIG_FILENAME = "redis.conf";
+
+    //file name of workgroup.yml
     static final String WORKGROUP_YAML_FILENAME = "workgroup.yml";
 
+    //return true if path is a dir
     static boolean checkIfDir(String path) {
         File f = new File(path);
         return (f.isDirectory());
     }
 
+    //do a regex pattern search on a file until success and return the first group match
+    // or throw an exception.
     static String filePregMatch(String filepath, String needle) throws Exception {
 
         Pattern p = Pattern.compile(needle);

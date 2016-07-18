@@ -29,6 +29,7 @@ import java.util.HashMap;
 
 class ControllerWorker {
 
+    //set apache balancer member status to drain
     static void drain(BalancerManagerManagedWorker w) throws Exception {
         HttpClientHelper.modifyWorker(
                 CliControl.BALANCER_MANAGER_URL,
@@ -39,6 +40,7 @@ class ControllerWorker {
         );
     }
 
+    //set apache balancer member status to non-disabled, non-drained
     static void reset(BalancerManagerManagedWorker w) throws Exception {
         HttpClientHelper.modifyWorker(
                 CliControl.BALANCER_MANAGER_URL,
@@ -50,6 +52,7 @@ class ControllerWorker {
         );
     }
 
+    //kill a Worker
     static void kill(Worker w) throws Exception {
         int pid = w.getProcessId(false).get(0);
         if (pid < 1) {
@@ -58,6 +61,7 @@ class ControllerWorker {
         HelperWindowsTask.killProcessByPid(pid);
     }
 
+    //kill a list of Workers
     static void killAll(Worker w) throws Exception {
         for (int pid : w.getProcessId(true)) {
             if (pid < 1) {
@@ -67,11 +71,12 @@ class ControllerWorker {
         }
     }
 
+    //restart the Cache Server via tcp socket
     static void restartCacheServer(String pw, int port) throws Exception {
-
         if (Main.SIMULATION < 1) {
-
-            try (Socket clientSocket = new Socket("localhost", port)) {
+            try (
+                    Socket clientSocket = new Socket("localhost", port)
+            ) {
                 DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
                 outToServer.writeBytes("AUTH " + pw + '\n' + "SHUTDOWN SAVE" + '\n');
             } catch (IOException e) {
@@ -80,6 +85,7 @@ class ControllerWorker {
         }
     }
 
+    //restart Postgre Server from cli
     static void RestartPostgreServer(String app_path, String data_dir) throws Exception {
         if (Main.SIMULATION < 1) {
             Runtime.getRuntime().exec(app_path + " stop -D \"" + data_dir + "\" -w ");

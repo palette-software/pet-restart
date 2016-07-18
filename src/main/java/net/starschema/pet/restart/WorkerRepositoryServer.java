@@ -28,6 +28,7 @@ import static net.starschema.pet.restart.HelperFile.filePregMatch;
 
 class WorkerRepositoryServer extends AbstractWorker {
 
+    //the name of the windows process of the Worker.
     private static final String WINDOWS_PROCESS_NAME = "pg_ctl.exe";
 
     WorkerRepositoryServer() {

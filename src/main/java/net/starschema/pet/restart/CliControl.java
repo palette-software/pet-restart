@@ -38,7 +38,7 @@ final class CliControl {
     //the deafualt time between checking a jmxable worker's active session numbers
     static int JMX_POLLING_TIME = 60;
 
-    //if true pet-restart won't do graceful restarts but simply kill the workers.
+    //if true pet-restart won't do graceful restarts but simply kill the Workers.
     static boolean FORCE_RESTARTS = false;
 
     //the default time after worker restarts
@@ -48,7 +48,6 @@ final class CliControl {
     static int WAIT_AFTER_ERROR = 60;
 
     //tabsvc config
-    //TODO:make it configurable via cli
     static String TABSVC_CONFIG_DIR = "c:\\ProgramData\\Tableau\\Tableau Server\\data\\tabsvc\\config";
 
     private CliControl() {
@@ -59,10 +58,10 @@ final class CliControl {
         Thread.sleep(1000 * secs);
     }
 
-    //helper, restarts balancer manager managed workers
+    //helper, restarts balancer manager managed Workers
     private static void restartBalancerManagerManagedWorkers(List<BalancerManagerManagedWorker> workers) throws Exception {
 
-        //print the workers
+        //print the Workers' name
         for (Worker w : workers) {
             Main.loggerStdOut.info(w.toString());
         }
@@ -82,7 +81,9 @@ final class CliControl {
             //if worker is jmxable, will check presence of jmx and the necessary mbean.
             if (w.getJmxPort() != -1) {
 
-                try (HelperJmxClient jmxClient = new HelperJmxClient()) {
+                try (
+                        HelperJmxClient jmxClient = new HelperJmxClient()
+                ) {
                     Main.loggerStdOut.info("Connecting to JMX endpoint jmx://localhost:" + w.getJmxPort());
 
                     jmxClient.connectService("service:jmx:rmi:///jndi/rmi://:" + w.getJmxPort() + "/jmxrmi");
@@ -145,41 +146,53 @@ final class CliControl {
         }
     }
 
-    //restarts the Vizql workers.
+    //restarts the Vizql Workers.
     static void restartVizqlWorkers() throws Exception {
 
-        List<BalancerManagerManagedWorker> workers;
+
 
         Main.loggerStdOut.info("Locating vizqlserver-cluster workers from balancer-manager");
 
+        //get the html source of balancer-manager
         String body = HttpClientHelper.getPage(BALANCER_MANAGER_URL);
-        workers = WorkerVizql.getworkersFromHtml(body);
+
+        //get the Workers from the source of balancer-manager
+        List<BalancerManagerManagedWorker> workers = WorkerVizql.getworkersFromHtml(body);
+
+        //restrart the worker(s)
         restartBalancerManagerManagedWorkers(workers);
     }
 
-    //restarts Dataserver workers
+    //restarts Dataserver Workers
     static void restartDataServerWorkers() throws Exception {
 
-        List<BalancerManagerManagedWorker> workers;
 
         Main.loggerStdOut.info("Locating dataserever-cluster workers from balancer-manager");
 
+        //get the html source of balancer-manager
         String body = HttpClientHelper.getPage(BALANCER_MANAGER_URL);
-        workers = WorkerDataServer.getworkersFromHtml(body);
+
+        //get the Workers from the source of balancer-manager
+        List<BalancerManagerManagedWorker> workers = WorkerDataServer.getworkersFromHtml(body);
+
+        //restrart the worker(s)
         restartBalancerManagerManagedWorkers(workers);
 
     }
 
-    //restarts Vizportal workers
+    //restarts Vizportal Workers
     static void restartVizportalWorkers() throws Exception {
 
-        List<BalancerManagerManagedWorker> workers;
-        String body;
 
         Main.loggerStdOut.info("Locating local-vizportal workers from balancer-manager");
 
-        body = HttpClientHelper.getPage(BALANCER_MANAGER_URL);
-        workers = WorkerVizportal.getworkersFromHtml(body);
+        //get the html source of balancer-manager
+        String body = HttpClientHelper.getPage(BALANCER_MANAGER_URL);
+
+        //get the Workers from the source of balancer-manager
+        List<BalancerManagerManagedWorker> workers = WorkerVizportal.getworkersFromHtml(body);
+
+        //restrart the worker(s)
         restartBalancerManagerManagedWorkers(workers);
     }
 
@@ -187,26 +200,41 @@ final class CliControl {
     static void restartGateway() throws Exception {
 
         Main.loggerStdOut.info("Restarting Gateway");
+
+        //kill the Gateway process
         ControllerWorker.kill(new WorkerGateway());
+
         CliControl.sleep(CliControl.WAIT_AFTER);
 
     }
 
     static void restartRepository() throws Exception {
+
         Main.loggerStdOut.info("Restarting Repository");
+
+        //restart Postgre Server from cli
         ControllerWorker.RestartPostgreServer(WorkerRepositoryServer.getAppPath(), WorkerRepositoryServer.getDataDir());
+
         CliControl.sleep(CliControl.WAIT_AFTER);
     }
 
     static void restartBackgrounderWorkers() throws Exception {
+
         Main.loggerStdOut.info("Restarting Backgrounder(s)");
+
+        //kill all Backgrounder processes
         ControllerWorker.killAll(new WorkerBackgrounder());
+
         CliControl.sleep(CliControl.WAIT_AFTER);
     }
 
     static void restartCacheServerWorkers() throws Exception {
+
         Main.loggerStdOut.info("Restarting Cache Server(s)");
+
+        //get Redis AUTH from config file
         String pw = WorkerCacheServer.getCacheServerAuthPassword();
+
         List<Integer> ports = WorkerCacheServer.getCacheServerports();
         Main.loggerStdOut.info("There " + (ports.size() > 1 ? "are" : "is") + " " + ports.size() + " port" + (ports.size() > 1 ? "s" : ""));
         for (int port : ports) {
