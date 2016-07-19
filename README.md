@@ -73,7 +73,7 @@ mvn clean package
 
 ```java -jar pet-restart-1.0.jar```
 
-## Grafcefully restart VizQL Workers:
+## Gracefully restart VizQL Workers:
 
 ```java -jar pet-restart-1.0.jar -rv```
 
