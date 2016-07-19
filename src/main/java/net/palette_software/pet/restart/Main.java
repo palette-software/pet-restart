@@ -1,6 +1,6 @@
 /*
 The MIT License (MIT)
-Copyright (c) 2016, Starschema Ltd
+Copyright (c) 2016, Palette Software
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -20,7 +20,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.starschema.pet.restart;
+package net.palette_software.pet.restart;
 
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
@@ -29,13 +29,8 @@ import java.util.regex.Pattern;
 
 public class Main {
 
-    final static Logger loggerStdOut = Logger.getLogger(Main.class);
-    final static Logger loggerFile = Logger.getLogger("fileLogger");
-
-    private final static String VERSION = "1.0";
-
-    //Simaulate all the kills/shutdowns/restarts
-    static int SIMULATION = 0;
+    static final Logger loggerStdOut = Logger.getLogger(Main.class);
+    static final Logger loggerFile = Logger.getLogger("fileLogger");
 
     public static void main(String[] args) {
 
@@ -97,10 +92,10 @@ public class Main {
             CommandLine line = parser.parse(options, args);
 
             if (line.hasOption("simulation")) {
-                SIMULATION = 1;
+                CliControl.SIMULATION = 1;
             }
 
-            if (SIMULATION > 0) {
+            if (CliControl.SIMULATION > 0) {
                 loggerStdOut.info("Running simulation.");
             }
             //check if tabsvc is running
@@ -220,7 +215,7 @@ public class Main {
 
                 if (line.hasOption("version")) {
                     need_help = false;
-                    loggerStdOut.info("Version: " + Main.VERSION);
+                    loggerStdOut.info("Version: " + CliControl.VERSION);
                 }
             }
 

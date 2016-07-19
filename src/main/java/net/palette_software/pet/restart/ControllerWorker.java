@@ -1,6 +1,6 @@
 /*
 The MIT License (MIT)
-Copyright (c) 2016, Starschema Ltd
+Copyright (c) 2016, Palette Software
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -20,7 +20,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.starschema.pet.restart;
+package net.palette_software.pet.restart;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -73,7 +73,7 @@ class ControllerWorker {
 
     //restart the Cache Server via tcp socket
     static void restartCacheServer(String pw, int port) throws Exception {
-        if (Main.SIMULATION < 1) {
+        if (CliControl.SIMULATION < 1) {
             try (
                     Socket clientSocket = new Socket("localhost", port)
             ) {
@@ -87,7 +87,7 @@ class ControllerWorker {
 
     //restart Postgre Server from cli
     static void RestartPostgreServer(String app_path, String data_dir) throws Exception {
-        if (Main.SIMULATION < 1) {
+        if (CliControl.SIMULATION < 1) {
             Runtime.getRuntime().exec(app_path + " stop -D \"" + data_dir + "\" -w ");
         }
     }

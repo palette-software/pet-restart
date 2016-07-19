@@ -1,6 +1,6 @@
 /*
 The MIT License (MIT)
-Copyright (c) 2016, Starschema Ltd
+Copyright (c) 2016, Palette Software
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -20,7 +20,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.starschema.pet.restart;
+package net.palette_software.pet.restart;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -37,7 +37,7 @@ class HelperWindowsTask {
     //kill a windows process using task killer
     static void killProcessByPid(int toKill) throws Exception {
 
-        if (Main.SIMULATION < 1) {
+        if (CliControl.SIMULATION < 1) {
             String cmd = CliControl.TASK_KILLER + " " + toKill;
             Runtime.getRuntime().exec(cmd);
         }

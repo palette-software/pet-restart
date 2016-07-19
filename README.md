@@ -2,6 +2,71 @@
 
 Tableau local service restarter Command-line interface utility.
 
+# Installation
+
+- Download and install JDK 1.8 and Maven if you have not installed them already.
+
+http://www.oracle.com/technetwork/java/javase/downloads/index.html
+
+https://maven.apache.org/download.cgi
+
+- Download the source of pet-restart.
+
+- Setup the maven-compiler-plugin's executable to the java compiler as a absolute link in pet-restart pom.xml: 
+
+```
+<build>
+...
+        <plugins>
+		...
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+				 ...
+				 <configuration>
+				 ...
+                    <fork>true</fork>
+                    <executable>C:\Program Files\Java\jdk1.8.0_91\bin\javac.exe</executable>
+					...
+```
+	
+- Enable Balancer Manager in Tableau Server's Gateway configuration template (default location: C:\Program Files\Tableau\Tableau Server\(version number)\templates\httpd.conf.templ ). 
+
+To do this, find this part
+
+```
+<Location /balancer-manager>
+SetHandler balancer-manager
+Require host 127.0.0.1
+</Location>
+```
+
+and change the Require host part to this RequireAny version:
+
+```
+<Location /balancer-manager>
+SetHandler balancer-manager
+<RequireAny>
+Require ip ::1
+Require ip 127.0.0.1
+</RequireAny>
+</Location>
+```
+
+- Stop, configure then start again Tableau Server:
+
+```
+tabadmin stop
+tabadmin configure
+tabadmin start
+```
+
+- Compile pet-restart from the source directory:
+
+```
+mvn clean package
+```
+
 # Usage
 
 ## Show help:
@@ -46,3 +111,8 @@ Switch | Arguments | Comments |
 ` -v,--version ` | | Print version information.
 ` --wait `  | Seconds | Waiting time between jobs
 ` --wait-errors `  | Seconds | Waiting time after errors/retries
+
+
+# Limitations
+
+In current format, pet-restart only works on a single node configuration.

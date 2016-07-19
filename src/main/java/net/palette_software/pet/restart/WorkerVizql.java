@@ -1,6 +1,6 @@
 /*
 The MIT License (MIT)
-Copyright (c) 2016, Starschema Ltd
+Copyright (c) 2016, Palette Software
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -20,21 +20,20 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.starschema.pet.restart;
+package net.palette_software.pet.restart;
 
 import java.util.List;
 
-class WorkerVizportal extends AbstractWorker implements BalancerManagerManagedWorker {
+class WorkerVizql extends AbstractWorker implements BalancerManagerManagedWorker {
 
     //Balancer Manager cluster name
-    private static final String BALANCERMEMBER_NAME = "local-vizportal";
+    private static final String BALANCERMEMBER_NAME = "vizqlserver-cluster";
 
     //the name of the windows process of the Worker.
-    private static final String WINDOWS_PROCESS_NAME = "vizportal.exe";
+    private static final String WINDOWS_PROCESS_NAME = "vizqlserver.exe";
 
-    //MBean object name in JMX. Because there is no getperformanceMetrics in the MBean,
-    // set it to "" to skip the JMX part.
-    private static final String M_BEAN_OBJECT_NAME = "";
+    //MBean object name in JMX
+    private static final String M_BEAN_OBJECT_NAME = "tableau.health.jmx:name=vizqlservice";
 
     //Regex pattern string to find the pid and filter to the command line of the Worker in wmic
     private static final String SEARCH_PROCESS_REGEX = "^\"([^\"])*" + WINDOWS_PROCESS_NAME + "\".*\\s+([0-9]+)\\s*$";
@@ -51,7 +50,7 @@ class WorkerVizportal extends AbstractWorker implements BalancerManagerManagedWo
     //JMX port of the Worker
     private int jmxPort;
 
-    WorkerVizportal(String memberName, String route, String nonce, int jmxPort) {
+    WorkerVizql(String memberName, String route, String nonce, int jmxPort) {
         this.memberName = memberName;
         this.route = route;
         this.nonce = nonce;
@@ -72,18 +71,18 @@ class WorkerVizportal extends AbstractWorker implements BalancerManagerManagedWo
     public String getNonce() {
         return nonce;
     }
-    public String getWindowsProcessName() {
-        return WINDOWS_PROCESS_NAME;
+    public String getRoute() {
+        return route;
     }
     public int getJmxPort() {
         return jmxPort;
     }
+    public String getWindowsProcessName() {
+        return WINDOWS_PROCESS_NAME;
+    }
     public List<Integer> getProcessId(boolean multiple) throws Exception {
         return getProcessIdHelper(multiple, SEARCH_PROCESS_REGEX);
     }
-
-    //single instance only, there is no route
-    public String getRoute() {return ""; }
 
     //wrapper to get Workers from Balancer Manager html source
     static List<BalancerManagerManagedWorker> getworkersFromHtml(String body) throws Exception {

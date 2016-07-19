@@ -1,6 +1,6 @@
 /*
 The MIT License (MIT)
-Copyright (c) 2016, Starschema Ltd
+Copyright (c) 2016, Palette Software
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -20,20 +20,20 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.starschema.pet.restart;
+package net.palette_software.pet.restart;
 
 import java.util.List;
 
-class WorkerVizql extends AbstractWorker implements BalancerManagerManagedWorker {
+class WorkerDataServer extends AbstractWorker implements BalancerManagerManagedWorker {
 
     //Balancer Manager cluster name
-    private static final String BALANCERMEMBER_NAME = "vizqlserver-cluster";
+    private static final String BALANCERMEMBER_NAME = "dataserver-cluster";
 
     //the name of the windows process of the Worker.
-    private static final String WINDOWS_PROCESS_NAME = "vizqlserver.exe";
+    private static final String WINDOWS_PROCESS_NAME = "dataserver.exe";
 
     //MBean object name in JMX
-    private static final String M_BEAN_OBJECT_NAME = "tableau.health.jmx:name=vizqlservice";
+    private static final String M_BEAN_OBJECT_NAME = "tableau.health.jmx:name=dataserver";
 
     //Regex pattern string to find the pid and filter to the command line of the Worker in wmic
     private static final String SEARCH_PROCESS_REGEX = "^\"([^\"])*" + WINDOWS_PROCESS_NAME + "\".*\\s+([0-9]+)\\s*$";
@@ -50,12 +50,11 @@ class WorkerVizql extends AbstractWorker implements BalancerManagerManagedWorker
     //JMX port of the Worker
     private int jmxPort;
 
-    WorkerVizql(String memberName, String route, String nonce, int jmxPort) {
+    WorkerDataServer(String memberName, String route, String nonce, int jmxPort) {
         this.memberName = memberName;
         this.route = route;
         this.nonce = nonce;
         this.jmxPort = jmxPort;
-
     }
 
     //getters for private propertiers
@@ -90,6 +89,9 @@ class WorkerVizql extends AbstractWorker implements BalancerManagerManagedWorker
     }
 
     public String toString() {
-        return "vizqlserver " + this.route + " " + this.memberName;
+        return "dataserver " + this.route + " " + this.memberName;
     }
+
+
+
 }

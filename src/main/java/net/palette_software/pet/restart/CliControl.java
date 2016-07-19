@@ -1,6 +1,6 @@
 /*
 The MIT License (MIT)
-Copyright (c) 2016, Starschema Ltd
+Copyright (c) 2016, Palette Software
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -20,11 +20,17 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.starschema.pet.restart;
+package net.palette_software.pet.restart;
 
 import java.util.List;
 
 final class CliControl {
+
+    //version number
+    static final String VERSION = "1.0";
+
+    //Simaulate all the kills/shutdowns/restarts
+    static int SIMULATION = 0;
 
     //url to tableau's local balance-manager
     static final String BALANCER_MANAGER_URL = "http://localhost/balancer-manager";

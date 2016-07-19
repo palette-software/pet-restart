@@ -1,6 +1,6 @@
 /*
 The MIT License (MIT)
-Copyright (c) 2016, Starschema Ltd
+Copyright (c) 2016, Palette Software
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -20,22 +20,19 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.starschema.pet.restart;
+package net.palette_software.pet.restart;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static net.starschema.pet.restart.HelperFile.filePregMatch;
+import static net.palette_software.pet.restart.HelperFile.filePregMatch;
 
-class WorkerCacheServer extends AbstractWorker {
+class WorkerRepositoryServer extends AbstractWorker {
 
     //the name of the windows process of the Worker.
-    private static final String WINDOWS_PROCESS_NAME = "redis-server.exe";
+    private static final String WINDOWS_PROCESS_NAME = "pg_ctl.exe";
 
-    WorkerCacheServer() {
+    WorkerRepositoryServer() {
     }
-
-    //"C:/Program Files/Tableau/Tableau Server/10.0/redis/bin/redis-server.exe" "C:/ProgramData/Tableau/Tableau Server/data/tabsvc/config/redis.conf" --logfile "C:/ProgramData/Tableau/Tableau Server/data/tabsvc/logs/cacheserver/redis_0.log" --dir "C:/ProgramData/Tableau/Tableau Server/data/tabsvc/cacheserver" --heapdir "C:/ProgramData/Tableau/Tableau Server/data/tabsvc/temp" --dbfilename redisdb_0.rdb --port 6379
 
     // this worker is not killable via taskkill
     public List<Integer> getProcessId(boolean multiple) throws Exception {
@@ -47,37 +44,26 @@ class WorkerCacheServer extends AbstractWorker {
     }
 
     public String toString() {
-        return "cacheserver";
+        return "repository";
     }
 
-    static String getCacheServerAuthPassword() throws Exception {
+    static String getAppPath() throws Exception {
 
         if (!HelperFile.checkIfDir(CliControl.TABSVC_CONFIG_DIR)) {
             throw new Exception(CliControl.TABSVC_CONFIG_DIR + " is not a directory.");
         }
 
-        return filePregMatch(CliControl.TABSVC_CONFIG_DIR + "//" + HelperFile.REDIS_CONFIG_FILENAME, "^requirepass (\\w+)$");
+        return filePregMatch(CliControl.TABSVC_CONFIG_DIR + "//" + HelperFile.WORKGROUP_YAML_FILENAME, "^pgsql\\.pgctl: (.*)$");
 
     }
 
-    static List<Integer> getCacheServerports() throws Exception {
+    static String getDataDir() throws Exception {
 
         if (!HelperFile.checkIfDir(CliControl.TABSVC_CONFIG_DIR)) {
             throw new Exception(CliControl.TABSVC_CONFIG_DIR + " is not a directory.");
         }
 
-        String portline = filePregMatch(CliControl.TABSVC_CONFIG_DIR + "//" + HelperFile.WORKGROUP_YAML_FILENAME, "^cacheserver\\.hosts: ([,:\\w]+)$");
+        return filePregMatch(CliControl.TABSVC_CONFIG_DIR + "//" + HelperFile.WORKGROUP_YAML_FILENAME, "^pgsql\\.data\\.dir: (.*)$");
 
-        List<Integer> ports = new ArrayList<>();
-
-        for (String part : portline.split(",")) {
-            String[] port = part.split(":");
-            try {
-                ports.add(Integer.parseInt(port[1]));
-            } catch (IndexOutOfBoundsException | NumberFormatException e) {
-                throw new Exception("Can not extract Cache Server port(s). ");
-            }
-        }
-        return ports;
     }
 }

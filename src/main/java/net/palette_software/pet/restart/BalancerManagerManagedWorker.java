@@ -1,6 +1,6 @@
 /*
 The MIT License (MIT)
-Copyright (c) 2016, Starschema Ltd
+Copyright (c) 2016, Palette Software
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -20,19 +20,37 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package net.starschema.pet.restart;
-
-import java.util.List;
+package net.palette_software.pet.restart;
 
 /**
- * Iterface represents a restartable process (Worker) in Tableau Server.
+ * Iterface represents a Worker in Tableau Server gateway mod_balancer configuration.
  */
-interface Worker {
+interface BalancerManagerManagedWorker extends Worker {
 
     /**
-     * @param multiple if true, we expect multiple pids
-     * @return list of pid(s) of worker(s)
-     * @throws Exception if not found any pid
+     * @return the name of the balancer cluster
      */
-    List<Integer> getProcessId(boolean multiple) throws Exception;
+    String getBalancerMemberName();
+
+    /**
+     * @return the name of the balancer worker
+     */
+    String getName();
+
+    /**
+     * @return the nonce of the balancer in balancer-manager
+     */
+    String getNonce();
+
+    /**
+     * @return the route of the balancer worker
+     */
+    String getRoute();
+
+    /**
+     * @return the associated JMX port of the worker
+     */
+    int getJmxPort();
+
+    String getMBeanObjectName();
 }
