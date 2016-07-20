@@ -85,7 +85,7 @@ class WorkerDataServer extends AbstractWorker implements BalancerManagerManagedW
 
     //wrapper to get Workers from Balancer Manager html source
     static List<BalancerManagerManagedWorker> getworkersFromHtml(String body) throws Exception {
-        return HttpClientHelper.getWorkersFromHtml(body, BALANCERMEMBER_NAME, M_BEAN_OBJECT_NAME);
+        return HelperHttpClient.getWorkersFromHtml(body, BALANCERMEMBER_NAME, M_BEAN_OBJECT_NAME);
     }
 
     public String toString() {

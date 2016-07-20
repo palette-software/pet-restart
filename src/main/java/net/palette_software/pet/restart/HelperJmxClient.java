@@ -95,7 +95,7 @@ class HelperJmxClient implements AutoCloseable {
                 break;
             } catch (IOException e) {
                 error = e.getMessage();
-                Main.loggerStdOut.info("IO error:" + error + "\nRetrying after " + CliControl.WAIT_AFTER_ERROR + " seconds...");
+                HelperLogger.loggerStdOut.info("IO error:" + error + "\nRetrying after " + CliControl.WAIT_AFTER_ERROR + " seconds...");
                 CliControl.sleep(CliControl.WAIT_AFTER_ERROR);
             }
         }

@@ -37,7 +37,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class HttpClientHelper {
+class HelperHttpClient {
 
     //accepted http post keys to interact with Balancer Manager
     private enum BalancerManagerAcceptedPostKeys {
@@ -64,10 +64,14 @@ class HttpClientHelper {
     }
 
     //Modify a Balancer manager managed worker's status in mod_balancer using http request(s)
-    static void modifyWorker(String targetURL, BalancerManagerManagedWorker w, HashMap<String, Integer> switches) throws Exception {
+    static void modifyWorker(String targetURL, BalancerManagerManagedWorker w, HashMap<String, Integer> switches, int simulation) throws Exception {
         try (
                 CloseableHttpClient client = HttpClients.createDefault()
         ) {
+
+            if (!(simulation < 1)) {
+                return;
+            }
 
             //connect to Balancer Manager
             HttpPost httpPost = new HttpPost(targetURL);
@@ -79,7 +83,7 @@ class HttpClientHelper {
                 String key = entry.getKey();
                 String value = entry.getValue().toString();
                 if (!BalancerManagerAcceptedPostKeysContains(key)) {
-                    Main.loggerStdOut.info("Bad key in modifyWorker (" + key + "," + value + ")");
+                    HelperLogger.loggerStdOut.info("Bad key in modifyWorker (" + key + "," + value + ")");
                     continue;
                 }
                 params.add(new BasicNameValuePair(key, value));
@@ -165,7 +169,7 @@ class HttpClientHelper {
                             jmxClient.connectService(jMXServiceURL);
                             if (!jmxClient.checkBeanExists(jmxObjectName)) {
                                 error = "Cannot found the required MBean " + jMXServiceURL + ":" + jmxObjectName;
-                                Main.loggerStdOut.info(error + "\nRetrying after " + CliControl.WAIT_AFTER_ERROR + " seconds...");
+                                HelperLogger.loggerStdOut.info(error + "\nRetrying after " + CliControl.WAIT_AFTER_ERROR + " seconds...");
                                 CliControl.sleep(CliControl.WAIT_AFTER_ERROR);
                             } else {
                                 error = "";

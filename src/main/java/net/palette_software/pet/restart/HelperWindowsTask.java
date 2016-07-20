@@ -35,9 +35,9 @@ class HelperWindowsTask {
     }
 
     //kill a windows process using task killer
-    static void killProcessByPid(int toKill) throws Exception {
+    static void killProcessByPid(int toKill, int simulation) throws Exception {
 
-        if (CliControl.SIMULATION < 1) {
+        if (simulation < 1) {
             String cmd = CliControl.TASK_KILLER + " " + toKill;
             Runtime.getRuntime().exec(cmd);
         }
@@ -50,7 +50,7 @@ class HelperWindowsTask {
         //run wmic
         String cmd = System.getenv("windir") + "\\system32\\wbem\\wmic.exe " +
                 " process where \"name='" + windows_process_name + "'\" get Processid, Commandline";
-        Main.loggerFile.info("exec: " + cmd);
+        HelperLogger.loggerFile.info("exec: " + cmd);
         Process p = Runtime.getRuntime().exec(cmd);
 
         //get wmic's output
@@ -90,5 +90,11 @@ class HelperWindowsTask {
             }
             return ports;
         }
+    }
+
+    //return true if Tableau Server is running on this computer.
+    static boolean isTabsvcRunning() throws Exception {
+        return HelperWindowsTask.searchForPidInWmic("tabsvc.exe", Pattern.compile(
+                "^\"([^\"])*tabsvc.exe\".*\\s+([0-9]+)\\s*$", Pattern.MULTILINE | Pattern.DOTALL)) == -1;
     }
 }

@@ -30,50 +30,52 @@ import java.util.HashMap;
 class ControllerWorker {
 
     //set apache balancer member status to drain
-    static void drain(BalancerManagerManagedWorker w) throws Exception {
-        HttpClientHelper.modifyWorker(
+    static void drain(BalancerManagerManagedWorker w, int simulation) throws Exception {
+        HelperHttpClient.modifyWorker(
                 CliControl.BALANCER_MANAGER_URL,
                 w,
                 new HashMap<String, Integer>() {{
                     put("w_status_N", 1);
-                }}
+                }},
+                simulation
         );
     }
 
     //set apache balancer member status to non-disabled, non-drained
-    static void reset(BalancerManagerManagedWorker w) throws Exception {
-        HttpClientHelper.modifyWorker(
+    static void reset(BalancerManagerManagedWorker w, int simulation) throws Exception {
+        HelperHttpClient.modifyWorker(
                 CliControl.BALANCER_MANAGER_URL,
                 w,
                 new HashMap<String, Integer>() {{
                     put("w_status_N", 0);
                     put("w_status_D", 0);
-                }}
+                }},
+                simulation
         );
     }
 
     //kill a Worker
-    static void kill(Worker w) throws Exception {
+    static void kill(Worker w, int simulation) throws Exception {
         int pid = w.getProcessId(false).get(0);
         if (pid < 1) {
             throw new Exception("Wrong PID: " + pid);
         }
-        HelperWindowsTask.killProcessByPid(pid);
+        HelperWindowsTask.killProcessByPid(pid, simulation);
     }
 
     //kill a list of Workers
-    static void killAll(Worker w) throws Exception {
+    static void killAll(Worker w, int simulation) throws Exception {
         for (int pid : w.getProcessId(true)) {
             if (pid < 1) {
                 throw new Exception("Wrong PID: " + pid);
             }
-            HelperWindowsTask.killProcessByPid(pid);
+            HelperWindowsTask.killProcessByPid(pid, simulation);
         }
     }
 
     //restart the Cache Server via tcp socket
-    static void restartCacheServer(String pw, int port) throws Exception {
-        if (CliControl.SIMULATION < 1) {
+    static void restartCacheServer(String pw, int port, int simulation) throws Exception {
+        if (simulation < 1) {
             try (
                     Socket clientSocket = new Socket("localhost", port)
             ) {
@@ -86,8 +88,8 @@ class ControllerWorker {
     }
 
     //restart Postgre Server from cli
-    static void RestartPostgreServer(String app_path, String data_dir) throws Exception {
-        if (CliControl.SIMULATION < 1) {
+    static void RestartPostgreServer(String app_path, String data_dir, int simulation) throws Exception {
+        if (simulation < 1) {
             Runtime.getRuntime().exec(app_path + " stop -D \"" + data_dir + "\" -w ");
         }
     }
