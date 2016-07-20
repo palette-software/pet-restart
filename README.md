@@ -1,6 +1,6 @@
-# pet-restart
+# Palette Enterprise Tabadmin Restart Plugin (pet-restart)
 
-Tableau local service restarter Command-line interface utility.
+Tableau Server local service restarter Command-line interface utility.
 
 # Installation
 
