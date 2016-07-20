@@ -67,6 +67,8 @@ tabadmin start
 mvn clean package
 ```
 
+- After a succesful build, the JAR you have to use will be in a new directory called target. 
+
 # Usage
 
 ## Show help:
