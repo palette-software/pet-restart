@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config>
-   <BALANCER_MANAGER_URL>http://localhost/balancer-manager</BALANCER_MANAGER_URL>
-   <TASK_KILLER>taskkill /F /PID</TASK_KILLER>
-</config>
