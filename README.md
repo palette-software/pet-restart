@@ -79,18 +79,17 @@ mvn clean package
 
 ```java -jar pet-restart-1.0.jar -rv```
 
-
 ## Non-gracefully restart VizQL Workers as fast as possible:
 
 ```java -jar pet-restart-1.0.jar -rv -f --wait 1```
 
-## Restart VizQL Workers :
+## Restart the Repository:
 
 ```java -jar pet-restart-1.0.jar -pg```
 
 ## Simulate restarting Cache and Repository:
 
-```java -jar pet-restart-1.0.jar -rc -rc -s```
+```java -jar pet-restart-1.0.jar -rc -pg -s```
 
 # Switches
 
