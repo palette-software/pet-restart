@@ -1,4 +1,4 @@
-# Palette Enterprise Tabadmin Restart Plugin (pet-restart)
+# Palette Enterprise Tabadmin Restart Plugin (pet-restart) [![Build Status](https://travis-ci.org/palette-software/pet-restart.svg?branch=master)](https://travis-ci.org/palette-software/pet-restart)
 
 Tableau Server local service restarter Command-line interface utility.
 
@@ -12,25 +12,11 @@ https://maven.apache.org/download.cgi
 
 - Download the source of pet-restart.
 
-- Setup the maven-compiler-plugin's executable to the java compiler as a absolute link in pet-restart pom.xml: 
+- Check your JAVA_HOME Environmental variable:
 
-```
-<build>
-...
-        <plugins>
-		...
-			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-				 ...
-				 <configuration>
-				 ...
-                    <fork>true</fork>
-                    <executable>C:\Program Files\Java\jdk1.8.0_91\bin\javac.exe</executable>
-					...
-```
+Right click My Computer and select Properties. Select Advanced tab, select Environment Variables. Check and if it is necessary create or edit JAVA_HOME to point to your javac.exe's directory e.g.: `C:\Program Files\Java\jdk1.8.0_91`
 	
-- Enable Balancer Manager in Tableau Server's Gateway configuration template (default location: C:\Program Files\Tableau\Tableau Server\(version number)\templates\httpd.conf.templ ). 
+- Enable Balancer Manager in Tableau Server's Gateway configuration template (default location: `C:\Program Files\Tableau\Tableau Server\(version number)\templates\httpd.conf.templ` ). 
 
 To do this, find this part
 
@@ -53,43 +39,64 @@ Require ip 127.0.0.1
 </Location>
 ```
 
-- Stop, configure then start again Tableau Server:
+- Stop the server (from Tableau Server bin folder, e.g.: `C:\Program Files\Tableau\Tableau Server\9.3\bin`).
 
 ```
 tabadmin stop
+```
+
+- Enable the JMX Ports if they are not yet enabled:
+
+```
+tabadmin set service.jmx_enabled true
+```
+
+- Configure then start again Tableau Server:
+
+```
 tabadmin configure
 tabadmin start
 ```
 
-- Compile pet-restart from the source directory:
+- Compile pet-restart from it's source directory:
 
 ```
 mvn clean package
 ```
 
-- After a succesful build, the JAR you have to use will be in a new directory called target. 
+- After a successful build, the JAR you have to use will be in a new directory called target. 
 
 # Usage
 
 ## Show help:
 
-```java -jar pet-restart-1.0.jar```
+```
+java -jar pet-restart-1.0.jar
+```
 
 ## Gracefully restart VizQL Workers:
 
-```java -jar pet-restart-1.0.jar -rv```
+```
+java -jar pet-restart-1.0.jar -rv
+```
 
 ## Non-gracefully restart VizQL Workers as fast as possible:
 
-```java -jar pet-restart-1.0.jar -rv -f --wait 1```
+```
+java -jar pet-restart-1.0.jar -rv -f --wait 1
+```
 
 ## Restart the Repository:
 
-```java -jar pet-restart-1.0.jar -pg```
+```
+java -jar pet-restart-1.0.jar -pg
+```
 
 ## Simulate restarting Cache and Repository:
 
-```java -jar pet-restart-1.0.jar -rc -pg -s```
+```
+java -jar pet-restart-1.0.jar -rc -pg -s
+```
 
 # Switches
 
@@ -112,7 +119,6 @@ Switch | Arguments | Comments |
 ` -v,--version ` | | Print version information.
 ` --wait `  | Seconds | Waiting time between jobs
 ` --wait-errors `  | Seconds | Waiting time after errors/retries
-
 
 # Limitations
 

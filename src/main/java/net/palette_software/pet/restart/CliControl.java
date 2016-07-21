@@ -29,9 +29,9 @@ import java.util.List;
 final class CliControl {
 
     //version number
-    private static final String VERSION = "1.0";
+    private static final String VERSION = "1.1-SNAPSHOT";
 
-    //Simaulate all the kills/shutdowns/restarts
+    //Simulate all the kills/shutdowns/restarts
     private static int SIMULATION = 0;
 
     //url to tableau's local balance-manager
