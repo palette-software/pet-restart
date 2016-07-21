@@ -130,15 +130,6 @@ java -jar pet-restart-1.0.jar -rv -f --wait 1
 java -jar pet-restart-1.0.jar -pg
 ```
 
-<<<<<<< HEAD
-## Simulate restarting Cache and Repository:
-
-```
-java -jar pet-restart-1.0.jar -rc -pg -s
-```
-
-=======
->>>>>>> b7c62c7b96384864eff71aa14867f05740d4d451
 # Switches
 
 Switch | Arguments | Comments |
