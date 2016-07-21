@@ -139,7 +139,7 @@ Switch | Arguments | Comments |
 ` -h,--help ` | | Show this help.
 ` --jmx-polling-time ` | Seconds | JMX data polling time. Default is 60 seconds.
 ` -pg,--reload-postgres ` | | Send reload signal to repository.
-` -r,--restart ` | | Restart all processes one-by-one.
+` -a,--restart ` | | Restart all processes one-by-one.
 ` -ra,--reload-apache ` | | Reload gateway rules.
 ` -rb,--restart-backgrounder ` | | Restart Backgrounder workers.
 ` -rc,--restart-cache ` | | Restart Cache Server.

@@ -404,7 +404,7 @@ final class CliControl {
     static void createCommandLineOptions(Options options) {
         options.addOption("h", "help", false, "This help.");
         options.addOption("v", "version", false, "Print version information.");
-        options.addOption("r", "restart", false, "Restart all processes one-by-one.");
+        options.addOption("a", "restart", false, "Restart all processes one-by-one.");
         options.addOption("rv", "restart-vizql", false, "Restart VizQL workers.");
         options.addOption("rc", "restart-cache", false, "Restart Cache Server.");
         options.addOption("s", "simulation", false, "Simulate all the restarts.");
