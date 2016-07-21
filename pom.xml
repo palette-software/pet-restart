@@ -6,7 +6,7 @@
 
     <groupId>net.palette_software</groupId>
     <artifactId>pet-restart</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
     <dependencies>
         <!-- http://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>
