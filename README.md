@@ -74,6 +74,44 @@ mvn clean package
 java -jar pet-restart-1.0.jar
 ```
 
+## Simulate restarting Cache and Repository:
+
+```java -jar pet-restart-1.0.jar -rc -pg -s```
+
+Simulation doesn't restart any of the processes, but rather goes through all the steps before an actual restart. It is <b>recommended</b> to run a simulation before issuing any restart commands to avoid possible failures. An example where JMX is disabled on vizqlserver:
+
+```
+C:\Users\palette\Java\pet-restart>java -jar target/pet-restart-1.1-SNAPSHOT.jar -s -r
+Running simulation.
+Restarting Repository
+Restarting Cache Server(s)
+There are 2 ports
+Restarting Cache server at port 6379
+Restarting Cache server at port 6380
+Locating local-vizportal workers from balancer-manager
+vizqlserver null http://localhost:8600
+vizqlserver null http://localhost:8601
+Restarting worker
+Switching worker to Draining mode
+Sending stop signal to process 164764
+Switch worker to Non-disabled mode
+Restart complete
+Restarting worker
+Switching worker to Draining mode
+Sending stop signal to process 164764
+Switch worker to Non-disabled mode
+Restart complete
+Locating vizqlserver-cluster workers from balancer-manager
+JMX connection error.
+Retrying after 60 seconds...
+JMX connection error.
+Retrying after 60 seconds...
+JMX connection error.
+Retrying after 60 seconds...
+Failed to retrieve RMIServer stub: javax.naming.ServiceUnavailableException [Root exception is java.rmi.ConnectException: Connection refused to host: 192.168.224.137; nested exception is:
+       java.net.ConnectException: Connection refused: connect]
+```
+
 ## Gracefully restart VizQL Workers:
 
 ```
@@ -92,20 +130,23 @@ java -jar pet-restart-1.0.jar -rv -f --wait 1
 java -jar pet-restart-1.0.jar -pg
 ```
 
+<<<<<<< HEAD
 ## Simulate restarting Cache and Repository:
 
 ```
 java -jar pet-restart-1.0.jar -rc -pg -s
 ```
 
+=======
+>>>>>>> b7c62c7b96384864eff71aa14867f05740d4d451
 # Switches
 
 Switch | Arguments | Comments |
 --- | --- |--- |
 ` -f,--force ` | | Disable JMX, send signals immediately (non-graceful).
-`  --force-restart-timeout `| Seconds | Force restart timeout.
+`  --force-restart-timeout `| Seconds | Force restart timeout. Default is 240 seconds.
 ` -h,--help ` | | Show this help.
-` --jmx-polling-time ` | Seconds | JMX data polling time.
+` --jmx-polling-time ` | Seconds | JMX data polling time. Default is 60 seconds.
 ` -pg,--reload-postgres ` | | Send reload signal to repository.
 ` -r,--restart ` | | Restart all processes one-by-one.
 ` -ra,--reload-apache ` | | Reload gateway rules.
@@ -117,8 +158,8 @@ Switch | Arguments | Comments |
 ` -s,--simulation ` | | Simulate all the restarts.
 ` --tabsvc-config-dir ` | Absolute path to directory | Path to tabsvc configs
 ` -v,--version ` | | Print version information.
-` --wait `  | Seconds | Waiting time between jobs
-` --wait-errors `  | Seconds | Waiting time after errors/retries
+` --wait `  | Seconds | Waiting time between jobs. Default is 30 seconds.
+` --wait-errors `  | Seconds | Waiting time after errors/retries. Default is 60 seconds.
 
 # Limitations
 
