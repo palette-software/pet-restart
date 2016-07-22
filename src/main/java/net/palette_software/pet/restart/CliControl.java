@@ -55,8 +55,16 @@ final class CliControl {
     //the default time until retrying after something went wrong
     static int WAIT_AFTER_ERROR = 60;
 
-    //tabsvc config
+    //tabsvc config directory
     static String TABSVC_CONFIG_DIR = "c:\\ProgramData\\Tableau\\Tableau Server\\data\\tabsvc\\config";
+
+    //tableau templetes directory
+    static String TABLEAU_INSTALLATION_DIR = "c:\\Program Files\\Tableau\\Tableau Server\\10.0";
+
+    //get tableau templetes directory
+    static String getTableauTemplatesDir(){
+        return TABLEAU_INSTALLATION_DIR + "\\templates";
+    }
 
     private CliControl() {
     }
@@ -252,6 +260,8 @@ final class CliControl {
         }
     }
 
+
+
     //turn simulation on if the simulation cli flag is set.
     static void useCommandLineOptionSimulation(CommandLine line) {
         if (line.hasOption("simulation")) {
@@ -282,6 +292,21 @@ final class CliControl {
             TABSVC_CONFIG_DIR = tabsvc_config_dir;
         }
     }
+
+    //change tableau installation dir if it has been set in command line.
+    static void useCommandLineOptionTableauInstallationDir(CommandLine line) throws Exception {
+        if (line.hasOption("tableau-installation-dir")) {
+            String tableau_installation_dir = line.getOptionValue("tableau-installation-dir");
+
+            if (!HelperFile.checkIfDir(tableau_installation_dir)) {
+                throw new Exception("tableau-installation-dir must be a valid directory");
+            }
+            TABLEAU_INSTALLATION_DIR = tableau_installation_dir;
+        }
+    }
+
+
+
 
     //change force restart timeout if it has been set in command line.
     static void useCommandLineOptionForceRestartTimeout(CommandLine line) throws Exception {
@@ -351,6 +376,13 @@ final class CliControl {
         }
     }
 
+    static boolean installPetRestart() throws Exception {
+        if (HelperInstaller.checkIfBalancerManagerDisabled()) {
+            HelperInstaller.EnableBalancerManager();
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Run tasks if their flags are set.
@@ -358,6 +390,14 @@ final class CliControl {
      */
     static boolean runCliControlledTasks(CommandLine line) throws Exception {
         boolean need_help=true;
+
+        if (line.hasOption("install")) {
+            need_help = false;
+            if (installPetRestart()) {
+                HelperLogger.loggerStdOut.info("httpd.conf.templ changed.\nPlease stop/configure/start Tableau Server!");
+            }
+        }
+
         if (line.hasOption("restart") || line.hasOption("reload-postgres")) {
             need_help = false;
             restartRepository();
@@ -408,6 +448,7 @@ final class CliControl {
         options.addOption("rv", "restart-vizql", false, "Restart VizQL workers.");
         options.addOption("rc", "restart-cache", false, "Restart Cache Server.");
         options.addOption("s", "simulation", false, "Simulate all the restarts.");
+        options.addOption("i", "install", false, "Set-up pet-restart.");
 
         options.addOption("rb", "restart-backgrounder", false, "Restart Backgrounder workers.");
         options.addOption("rp", "restart-vizportal", false, "Restart Vizportal workers.");
@@ -445,6 +486,13 @@ final class CliControl {
                 .hasArg()
                 .withArgName("PATH")
                 .create());
+        options.addOption(OptionBuilder.withLongOpt("tableau-installation-dir")
+                .withDescription("Path to Tableau Server installation directory")
+                .hasArg()
+                .withArgName("PATH")
+                .create());
+
+
     }
 
     /**
