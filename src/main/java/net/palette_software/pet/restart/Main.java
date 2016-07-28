@@ -27,7 +27,6 @@ import org.apache.commons.cli.*;
 public class Main {
 
     public static void main(String[] args) {
-
         //if true, help will shown
         boolean need_help = true;
 
@@ -62,6 +61,9 @@ public class Main {
 
                 //change tabsvc config dir if it has been set in command line.
                 CliControl.useCommandLineOptionTabsvcConfigDir(line);
+
+                //change tableau installation dir if it has been set in command line.
+                CliControl.useCommandLineOptionTableauInstallationDir(line);
 
                 //change force restart timeout if it has been set in command line.
                 CliControl.useCommandLineOptionForceRestartTimeout(line);
