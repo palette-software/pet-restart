@@ -395,6 +395,8 @@ final class CliControl {
             need_help = false;
             if (installPetRestart()) {
                 HelperLogger.loggerStdOut.info("httpd.conf.templ changed.\nPlease stop/configure/start Tableau Server!");
+            } else {
+                HelperLogger.loggerStdOut.info("Balancer-manager already enabled.");
             }
         }
 
@@ -448,8 +450,7 @@ final class CliControl {
         options.addOption("rv", "restart-vizql", false, "Restart VizQL workers.");
         options.addOption("rc", "restart-cache", false, "Restart Cache Server.");
         options.addOption("s", "simulation", false, "Simulate all the restarts.");
-        options.addOption("i", "install", false, "Set-up pet-restart.");
-
+        options.addOption("i", "install", false, "Enable Balancer-manager.");
         options.addOption("rb", "restart-backgrounder", false, "Restart Backgrounder workers.");
         options.addOption("rp", "restart-vizportal", false, "Restart Vizportal workers.");
         options.addOption("rd", "restart-dataserver", false, "Restart Data Server workers.");
