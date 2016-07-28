@@ -71,17 +71,17 @@ mvn clean package
 ## Show help:
 
 ```
-java -jar pet-restart-1.0.jar
+java -jar pet-restart-1.1-SNAPSHOT.jar
 ```
 
-## Simulate restarting Cache and Repository:
+## Simulate restarting Cache and Repository (using 1.1-SNAPSHOT):
 
-```java -jar pet-restart-1.0.jar -rc -pg -s```
+```java -jar pet-restart-1.1-SNAPSHOT.jar -rc -pg -s```
 
 Simulation doesn't restart any of the processes, but rather goes through all the steps before an actual restart. It is <b>recommended</b> to run a simulation before issuing any restart commands to avoid possible failures. An example where JMX is disabled on vizqlserver:
 
 ```
-C:\Users\palette\Java\pet-restart>java -jar target/pet-restart-1.1-SNAPSHOT.jar -s -r
+C:\Users\palette\Java\pet-restart>java -jar target/pet-restart-1.1-SNAPSHOT.jar -s -a
 Running simulation.
 Restarting Repository
 Restarting Cache Server(s)
@@ -112,19 +112,19 @@ Failed to retrieve RMIServer stub: javax.naming.ServiceUnavailableException [Roo
        java.net.ConnectException: Connection refused: connect]
 ```
 
-## Gracefully restart VizQL Workers:
+## Gracefully restart VizQL Workers (using 1.0):
 
 ```
 java -jar pet-restart-1.0.jar -rv
 ```
 
-## Non-gracefully restart VizQL Workers as fast as possible:
+## Non-gracefully restart VizQL Workers as fast as possible (using 1.0):
 
 ```
 java -jar pet-restart-1.0.jar -rv -f --wait 1
 ```
 
-## Restart the Repository:
+## Restart the Repository (using 1.0):
 
 ```
 java -jar pet-restart-1.0.jar -pg
